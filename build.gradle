@@ -1,0 +1,28 @@
+apply plugin: 'application'
+
+group 'com.ibid-events'
+version '1.0-SNAPSHOT'
+
+task wrapper(type: Wrapper) {
+	gradleVersion = '2.2'
+	distributionUrl = "https://services.gradle.org/distributions/gradle-$gradleVersion-all.zip"
+}
+
+apply plugin: 'java'
+
+sourceCompatibility = 1.7
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	compile 'com.yammer.dropwizard:dropwizard-core:0.6.2'
+	compile 'org.eclipse.jetty:jetty-servlets:8.1.10.v20130312'
+	compile 'org.eclipse.jetty:jetty-websocket:8.1.10.v20130312'
+//	compile 'org.atmosphere:atmosphere-runtime:2.2.1'
+	compile 'org.atmosphere:atmosphere-runtime:2.3.1'
+}
+
+mainClassName = "com.ibid_events.ExampleService"
+run.args = ["server", file("$projectDir/config.yml")]

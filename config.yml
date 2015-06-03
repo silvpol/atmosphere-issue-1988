@@ -1,0 +1,18 @@
+http:
+  connectorType: nonblocking
+
+logging:
+
+  level: DEBUG
+  # Settings for logging to stdout.
+  console:
+
+    # If true, write log statements to stdout.
+    enabled: true
+
+    # Do not display log statements below this threshold to stdout.
+    threshold: DEBUG
+
+  loggers:
+    "org.eclipse.jetty": WARN
+    "org.atmosphere.cpr": TRACE

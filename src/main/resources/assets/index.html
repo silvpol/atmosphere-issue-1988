@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+<head lang="en">
+	<meta charset="UTF-8">
+	<title></title>
+	<script src="atmosphere.js"></script>
+	<script>
+		var socket = atmosphere;
+
+		var passSocket, failSocket;
+
+		var connectToAtmosphere = function (sub) {
+			var request = new atmosphere.AtmosphereRequest();
+			request.url = 'http://localhost:8080/ws/' + sub;
+			request.contentType = 'application/json';
+			request.reconnectInterval = 30000;
+			request.transport = 'websocket';
+			//request.transport = 'streaming';
+			request.fallbackTransport = 'streaming';
+			request.enableXDR = true;
+			request.trackMessageLength = true;
+			request.maxReconnectOnClose = 1000;
+			request.closeAsync = true;
+			request.onOpen = function (response) {
+				console.log('onOpen: ' + response.transport);
+			};
+			request.onClose = function (response) {
+				console.log('onClose: ' + response.transport);
+			};
+			request.onMessage = function (response) {
+				console.log('onMessage: ');
+				console.log(response.responseBody);
+			};
+			request.onError = function (response) {
+				console.log('onError: ' + response.reasonPhrase);
+			};
+			request.onReconnect = function (response) {
+				console.log('onReconnect: ' + response.transport);
+			};
+			request.onMessagePublished = function (response) {
+				console.log('onMessagePublished: ' + response.responseBody);
+			};
+			request.onClientTimeout = function (response) {
+				console.log('onClientTimeout: ' + response.reasonPhrase);
+			};
+			request.onTransportFailure = function (response) {
+				console.log('onTransportFailure: ' + response.reasonPhrase);
+			};
+			return socket.subscribe(request);
+		};
+
+		var sendPing = function (subSocket) {
+			subSocket.push("ping");
+		};
+
+	</script>
+</head>
+<body>
+<div>
+	<fieldset>
+		<legend>/ws/pass</legend>
+		<input type="button" value="Connect" onclick="passSocket = connectToAtmosphere('pass');">
+		<input type="button" value="Ping" onclick="sendPing(passSocket)">
+		<input type="button" value="Disconnect" onclick="passSocket.close()">
+	</fieldset>
+</div>
+<div>
+	<fieldset>
+		<legend>/ws/fail</legend>
+		<input type="button" value="Connect" onclick="failSocket = connectToAtmosphere('fail');">
+		<input type="button" value="Ping" onclick="sendPing(failSocket)">
+		<input type="button" value="Disconnect" onclick="failSocket.close()">
+	</fieldset>
+</div>
+</body>
+</html>
